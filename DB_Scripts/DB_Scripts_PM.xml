@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+  <!--CONTRACT-->
+  <DBO name="pbs_PM_CONTRACT_{XXX}" type="U">
+    <Install>
+      IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID(N'dbo.[pbs_PM_CONTRACT_{XXX}]'))
+      BEGIN
+      CREATE TABLE [dbo].[pbs_PM_CONTRACT_{XXX}](
+      [LINE_NO] [int] IDENTITY(1,1) NOT NULL,
+      [CONTRACT_NO] [nvarchar](25) NOT NULL,
+      [CONTRACT_DATE] [int] NOT NULL,
+      [CONTRACTOR] [varchar](15) NOT NULL,
+      [CONTRUCTION_UNIT] [varchar](15) NOT NULL,
+      [CONTRUCTION_UNIT_NAME] [nvarchar](50) NOT NULL,
+      [CONTRACT_TYPE] [varchar](15) NOT NULL,
+      [CONTRACT_FORM] [varchar](15) NOT NULL,
+      [CURRENCY] [varchar](15) NOT NULL,
+      [CONTRACT_VALUE] [decimal](18, 2) NOT NULL,
+      [VAT_RATE] [decimal](18, 2) NOT NULL,
+      [VAT_AMOUNT] [decimal](18, 2) NOT NULL,
+      [RETENTION_RATE] [decimal](18, 2) NOT NULL,
+      [RETENTION_AMOUNT] [decimal](18, 2) NOT NULL,
+      [PROJECT_CODE] [varchar](15) NOT NULL,
+      [PERFORMANCE_SECURITY_RATE] [decimal](18, 2) NOT NULL,
+      [PERFORMANCE_SECURITY_AMOUNT] [decimal](18, 2) NOT NULL,
+      [VALID_TO] [int] NOT NULL,
+      [PERFORM_FROM] [int] NOT NULL,
+      [PERFROM_TO] [int] NOT NULL,
+      [CONTRACT_CONTENTS] [nvarchar](2000) NOT NULL,
+      [PROCESSING_REQUEST] [nvarchar](2000) NOT NULL,
+      [PAYMENT_TERMS] [nvarchar](200) NOT NULL,
+      [COMMENTS] [nvarchar](200) NOT NULL,
+      [APPENDIX] [varchar](15) NOT NULL,
+      [UPDATED] [int] NOT NULL,
+      [UPDATED_BY] [varchar](15) NOT NULL,
+      [TIME_STAMP] [timestamp] NULL,
+      CONSTRAINT [PK_pbs_PM_CONTRACT_{XXX}] PRIMARY KEY CLUSTERED
+      (
+      [LINE_NO] ASC
+      )
+      )
+      END
+    </Install>
+  </DBO>
+  <DBO name="pbs_PM_CONTRACT_{XXX}_Insert" type="P">
+    <Install>
+      IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[pbs_PM_CONTRACT_{XXX}_Insert]') AND OBJECTPROPERTY(id,N'IsProcedure') = 1)
+      BEGIN
+      EXEC dbo.sp_executesql @statement = N'
+      CREATE PROCEDURE [pbs_PM_CONTRACT_{XXX}_Insert]
+      @LINE_NO int output,
+      @CONTRACT_NO nvarchar (25),
+      @CONTRACT_DATE int,
+      @CONTRACTOR varchar(15),
+      @CONTRUCTION_UNIT varchar(15),
+      @CONTRUCTION_UNIT_NAME nvarchar (50),
+      @CONTRACT_TYPE varchar(15),
+      @CONTRACT_FORM varchar(15),
+      @CURRENCY varchar(15),
+      @CONTRACT_VALUE decimal(18, 2),
+      @VAT_RATE decimal(18, 2),
+      @VAT_AMOUNT decimal(18, 2),
+      @RETENTION_RATE decimal(18, 2),
+      @RETENTION_AMOUNT decimal(18, 2),
+      @PROJECT_CODE varchar(15),
+      @PERFORMANCE_SECURITY_RATE decimal(18, 2),
+      @PERFORMANCE_SECURITY_AMOUNT decimal(18, 2),
+      @VALID_TO int,
+      @PERFORM_FROM int,
+      @PERFROM_TO int,
+      @CONTRACT_CONTENTS nvarchar (2000),
+      @PROCESSING_REQUEST nvarchar (2000),
+      @PAYMENT_TERMS nvarchar (200),
+      @COMMENTS nvarchar (200),
+      @APPENDIX varchar(15),
+      @UPDATED int,
+      @UPDATED_BY varchar(15)
+      AS
+
+      SET NOCOUNT ON
+      INSERT INTO [pbs_PM_CONTRACT_{XXX}] ([CONTRACT_NO],
+      [CONTRACT_DATE],
+      [CONTRACTOR],
+      [CONTRUCTION_UNIT],
+      [CONTRUCTION_UNIT_NAME],
+      [CONTRACT_TYPE],
+      [CONTRACT_FORM],
+      [CURRENCY],
+      [CONTRACT_VALUE],
+      [VAT_RATE],
+      [VAT_AMOUNT],
+      [RETENTION_RATE],
+      [RETENTION_AMOUNT],
+      [PROJECT_CODE],
+      [PERFORMANCE_SECURITY_RATE],
+      [PERFORMANCE_SECURITY_AMOUNT],
+      [VALID_TO],
+      [PERFORM_FROM],
+      [PERFROM_TO],
+      [CONTRACT_CONTENTS],
+      [PROCESSING_REQUEST],
+      [PAYMENT_TERMS],
+      [COMMENTS],
+      [APPENDIX],
+      [UPDATED],
+      [UPDATED_BY])
+      VALUES (@CONTRACT_NO,
+      @CONTRACT_DATE,
+      @CONTRACTOR,
+      @CONTRUCTION_UNIT,
+      @CONTRUCTION_UNIT_NAME,
+      @CONTRACT_TYPE,
+      @CONTRACT_FORM,
+      @CURRENCY,
+      @CONTRACT_VALUE,
+      @VAT_RATE,
+      @VAT_AMOUNT,
+      @RETENTION_RATE,
+      @RETENTION_AMOUNT,
+      @PROJECT_CODE,
+      @PERFORMANCE_SECURITY_RATE,
+      @PERFORMANCE_SECURITY_AMOUNT,
+      @VALID_TO,
+      @PERFORM_FROM,
+      @PERFROM_TO,
+      @CONTRACT_CONTENTS,
+      @PROCESSING_REQUEST,
+      @PAYMENT_TERMS,
+      @COMMENTS,
+      @APPENDIX,
+      @UPDATED,
+      @UPDATED_BY)
+
+      SET @LINE_NO = SCOPE_IDENTITY()
+
+      '
+      END
+    </Install>
+  </DBO>
+  <DBO name="pbs_PM_CONTRACT_{XXX}_Update" type="P">
+    <Install>
+      IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[pbs_PM_CONTRACT_{XXX}_Update]') AND OBJECTPROPERTY(id,N'IsProcedure') = 1)
+      BEGIN
+      EXEC dbo.sp_executesql @statement = N'
+      CREATE PROCEDURE [pbs_PM_CONTRACT_{XXX}_Update]
+      @LINE_NO int,
+      @CONTRACT_NO nvarchar (25),
+      @CONTRACT_DATE int,
+      @CONTRACTOR varchar(15),
+      @CONTRUCTION_UNIT varchar(15),
+      @CONTRUCTION_UNIT_NAME nvarchar (50),
+      @CONTRACT_TYPE varchar(15),
+      @CONTRACT_FORM varchar(15),
+      @CURRENCY varchar(15),
+      @CONTRACT_VALUE decimal(18, 2),
+      @VAT_RATE decimal(18, 2),
+      @VAT_AMOUNT decimal(18, 2),
+      @RETENTION_RATE decimal(18, 2),
+      @RETENTION_AMOUNT decimal(18, 2),
+      @PROJECT_CODE varchar(15),
+      @PERFORMANCE_SECURITY_RATE decimal(18, 2),
+      @PERFORMANCE_SECURITY_AMOUNT decimal(18, 2),
+      @VALID_TO int,
+      @PERFORM_FROM int,
+      @PERFROM_TO int,
+      @CONTRACT_CONTENTS nvarchar (2000),
+      @PROCESSING_REQUEST nvarchar (2000),
+      @PAYMENT_TERMS nvarchar (200),
+      @COMMENTS nvarchar (200),
+      @APPENDIX varchar(15),
+      @UPDATED int,
+      @UPDATED_BY varchar(15)
+      AS
+
+      SET NOCOUNT ON
+      UPDATE [pbs_PM_CONTRACT_{XXX}] SET [CONTRACT_NO] = @CONTRACT_NO,
+      [CONTRACT_DATE] = @CONTRACT_DATE,
+      [CONTRACTOR] = @CONTRACTOR,
+      [CONTRUCTION_UNIT] = @CONTRUCTION_UNIT,
+      [CONTRUCTION_UNIT_NAME] = @CONTRUCTION_UNIT_NAME,
+      [CONTRACT_TYPE] = @CONTRACT_TYPE,
+      [CONTRACT_FORM] = @CONTRACT_FORM,
+      [CURRENCY] = @CURRENCY,
+      [CONTRACT_VALUE] = @CONTRACT_VALUE,
+      [VAT_RATE] = @VAT_RATE,
+      [VAT_AMOUNT] = @VAT_AMOUNT,
+      [RETENTION_RATE] = @RETENTION_RATE,
+      [RETENTION_AMOUNT] = @RETENTION_AMOUNT,
+      [PROJECT_CODE] = @PROJECT_CODE,
+      [PERFORMANCE_SECURITY_RATE] = @PERFORMANCE_SECURITY_RATE,
+      [PERFORMANCE_SECURITY_AMOUNT] = @PERFORMANCE_SECURITY_AMOUNT,
+      [VALID_TO] = @VALID_TO,
+      [PERFORM_FROM] = @PERFORM_FROM,
+      [PERFROM_TO] = @PERFROM_TO,
+      [CONTRACT_CONTENTS] = @CONTRACT_CONTENTS,
+      [PROCESSING_REQUEST] = @PROCESSING_REQUEST,
+      [PAYMENT_TERMS] = @PAYMENT_TERMS,
+      [COMMENTS] = @COMMENTS,
+      [APPENDIX] = @APPENDIX,
+      [UPDATED] = @UPDATED,
+      [UPDATED_BY] = @UPDATED_BY
+      WHERE [LINE_NO] = @LINE_NO
+      '
+      END
+    </Install>
+  </DBO>
+  
+ <!--WBS-->
+  <DBO name="pbs_PM_WBS_{XXX}" type="U">
+    <Install>
+      IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID(N'dbo.[pbs_PM_WBS_{XXX}]'))
+      BEGIN
+      CREATE TABLE [dbo].[pbs_PM_WBS_{XXX}](
+      [LINE_NO] [int] IDENTITY(1,1) NOT NULL,
+      [CONTRACT_NO] [int] NOT NULL,
+      [WBS] [varchar](15) NOT NULL,
+      [UNIT] [varchar](15) NOT NULL,
+      [WEIGH] [decimal](18, 2) NOT NULL,
+      [LABOR] [char](1) NOT NULL,
+      [MATERIALS] [char](1) NOT NULL,
+      [MACHINES] [char](1) NOT NULL,
+      [UNIT_PRICE] [decimal](18, 2) NOT NULL,
+      [TOTAL_AMOUNT] [decimal](18, 2) NOT NULL,
+      [PERFORM_FROM] [int] NOT NULL,
+      [PERFROM_TO] [int] NOT NULL,
+      [UPDATED] [int] NOT NULL,
+      [UPDATED_BY] [varchar](15) NOT NULL,
+      [TIME_STAMP] [timestamp] NULL,
+      CONSTRAINT [PK_pbs_PM_WBS_{XXX}] PRIMARY KEY CLUSTERED
+      (
+      [LINE_NO] ASC
+      )
+      )
+      END
+    </Install>
+  </DBO>
+  <DBO name="pbs_PM_WBS_{XXX}_Insert" type="P">
+    <Install>
+      IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[pbs_PM_WBS_{XXX}_Insert]') AND OBJECTPROPERTY(id,N'IsProcedure') = 1)
+      BEGIN
+      EXEC dbo.sp_executesql @statement = N'
+      CREATE PROCEDURE [pbs_PM_WBS_{XXX}_Insert]
+      @LINE_NO int output,
+      @CONTRACT_NO int,
+      @WBS varchar(15),
+      @UNIT varchar(15),
+      @WEIGH decimal(18, 2),
+      @LABOR char(1),
+      @MATERIALS char(1),
+      @MACHINES char(1),
+      @UNIT_PRICE decimal(18, 2),
+      @TOTAL_AMOUNT decimal(18, 2),
+      @PERFORM_FROM int,
+      @PERFROM_TO int,
+      @UPDATED int,
+      @UPDATED_BY varchar(15)
+      AS
+
+      SET NOCOUNT ON
+      INSERT INTO [pbs_PM_WBS_{XXX}] ([CONTRACT_NO],
+      [WBS],
+      [UNIT],
+      [WEIGH],
+      [LABOR],
+      [MATERIALS],
+      [MACHINES],
+      [UNIT_PRICE],
+      [TOTAL_AMOUNT],
+      [PERFORM_FROM],
+      [PERFROM_TO],
+      [UPDATED],
+      [UPDATED_BY])
+      VALUES (@CONTRACT_NO,
+      @WBS,
+      @UNIT,
+      @WEIGH,
+      @LABOR,
+      @MATERIALS,
+      @MACHINES,
+      @UNIT_PRICE,
+      @TOTAL_AMOUNT,
+      @PERFORM_FROM,
+      @PERFROM_TO,
+      @UPDATED,
+      @UPDATED_BY)
+
+      SET @LINE_NO = SCOPE_IDENTITY()
+
+      '
+      END
+    </Install>
+  </DBO>
+  <DBO name="pbs_PM_WBS_{XXX}_Update" type="P">
+    <Install>
+      IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[pbs_PM_WBS_{XXX}_Update]') AND OBJECTPROPERTY(id,N'IsProcedure') = 1)
+      BEGIN
+      EXEC dbo.sp_executesql @statement = N'
+      CREATE PROCEDURE [pbs_PM_WBS_{XXX}_Update]
+      @LINE_NO int,
+      @CONTRACT_NO int,
+      @WBS varchar(15),
+      @UNIT varchar(15),
+      @WEIGH decimal(18, 2),
+      @LABOR char(1),
+      @MATERIALS char(1),
+      @MACHINES char(1),
+      @UNIT_PRICE decimal(18, 2),
+      @TOTAL_AMOUNT decimal(18, 2),
+      @PERFORM_FROM int,
+      @PERFROM_TO int,
+      @UPDATED int,
+      @UPDATED_BY varchar(15)
+      AS
+
+      SET NOCOUNT ON
+      UPDATE [pbs_PM_WBS_{XXX}] SET [CONTRACT_NO] = @CONTRACT_NO,
+      [WBS] = @WBS,
+      [UNIT] = @UNIT,
+      [WEIGH] = @WEIGH,
+      [LABOR] = @LABOR,
+      [MATERIALS] = @MATERIALS,
+      [MACHINES] = @MACHINES,
+      [UNIT_PRICE] = @UNIT_PRICE,
+      [TOTAL_AMOUNT] = @TOTAL_AMOUNT,
+      [PERFORM_FROM] = @PERFORM_FROM,
+      [PERFROM_TO] = @PERFROM_TO,
+      [UPDATED] = @UPDATED,
+      [UPDATED_BY] = @UPDATED_BY
+      WHERE [LINE_NO] = @LINE_NO
+      '
+      END
+    </Install>
+  </DBO>
+
+
+</Root>
