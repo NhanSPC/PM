@@ -27,37 +27,47 @@ Namespace PM
         End Sub
 
         Private Sub BO_PropertyChanged(sender As Object, e As ComponentModel.PropertyChangedEventArgs) Handles Me.PropertyChanged
-            'Select Case e.PropertyName
+            Select e.PropertyName
 
-            '    Case "OrderType"
-            '        If Not Me.GetOrderTypeInfo.ManualRef Then
-            '            Me._orderNo = POH.AutoReference
-            '        End If
+                Case "VatRate"
+                    _vatAmount.Float = _vatRate.Float * _contractValue.Float
 
-            '    Case "OrderDate"
-            '        If String.IsNullOrEmpty(Me.OrderPrd) Then Me._orderPrd.Text = Me._orderDate.Date.ToSunPeriod
+                Case "RetentionRate"
+                    _retentionAmount.Float = _retentionRate.Float * _contractValue.Float
 
-            '    Case "SuppCode"
-            '        For Each line In Lines
-            '            line._suppCode = Me.SuppCode
-            '        Next
+                Case "PerformanceSecurityRate"
+                    _performanceSecurityAmount.Float = _performanceSecurityRate.Float * _contractValue.Float
 
-            '    Case "ConvCode"
-            '        If String.IsNullOrEmpty(Me.ConvCode) Then
-            '            _convRate.Float = 0
-            '        Else
-            '            Dim conv = pbs.BO.LA.CVInfoList.GetConverter(Me.ConvCode, _orderPrd, String.Empty)
-            '            If conv IsNot Nothing Then
-            '                _convRate.Float = conv.DefaultRate
-            '            End If
-            '        End If
+                    '    Case "OrderType"
+                    '        If Not Me.GetOrderTypeInfo.ManualRef Then
+                    '            Me._orderNo = POH.AutoReference
+                    '        End If
 
-            '    Case Else
+                    '    Case "OrderDate"
+                    '        If String.IsNullOrEmpty(Me.OrderPrd) Then Me._orderPrd.Text = Me._orderDate.Date.ToSunPeriod
 
-            'End Select
+                    '    Case "SuppCode"
+                    '        For Each line In Lines
+                    '            line._suppCode = Me.SuppCode
+                    '        Next
+
+                    '    Case "ConvCode"
+                    '        If String.IsNullOrEmpty(Me.ConvCode) Then
+                    '            _convRate.Float = 0
+                    '        Else
+                    '            Dim conv = pbs.BO.LA.CVInfoList.GetConverter(Me.ConvCode, _orderPrd, String.Empty)
+                    '            If conv IsNot Nothing Then
+                    '                _convRate.Float = conv.DefaultRate
+                    '            End If
+                    '        End If
+
+                    '    Case Else
+
+            End Select
 
             pbs.BO.Rules.CalculationRules.Calculator(sender, e)
         End Sub
+
 #End Region
 
 #Region " Business Properties and Methods "
