@@ -139,15 +139,14 @@ Namespace PM
 
         Private _labor As String = String.Empty
         <CellInfo(Tips:="", ControlType:=Forms.CtrlType.CheckBox)>
-        Public Property Labor() As String
+        Public Property Labor() As Boolean
             Get
-                Return _labor
+                Return _labor.ToBoolean
             End Get
-            Set(ByVal value As String)
+            Set(ByVal value As Boolean)
                 CanWriteProperty("Labor", True)
-                If value Is Nothing Then value = String.Empty
                 If Not _labor.Equals(value) Then
-                    _labor = value
+                    _labor = If(value, "Y", "N")
                     PropertyHasChanged("Labor")
                 End If
             End Set
@@ -155,15 +154,14 @@ Namespace PM
 
         Private _materials As String = String.Empty
         <CellInfo(Tips:="", ControlType:=Forms.CtrlType.CheckBox)>
-        Public Property Materials() As String
+        Public Property Materials() As Boolean
             Get
-                Return _materials
+                Return _materials.ToBoolean
             End Get
-            Set(ByVal value As String)
+            Set(ByVal value As Boolean)
                 CanWriteProperty("Materials", True)
-                If value Is Nothing Then value = String.Empty
                 If Not _materials.Equals(value) Then
-                    _materials = value
+                    _materials = If(value, "Y", "N")
                     PropertyHasChanged("Materials")
                 End If
             End Set
@@ -171,15 +169,14 @@ Namespace PM
 
         Private _machines As String = String.Empty
         <CellInfo(Tips:="", ControlType:=Forms.CtrlType.CheckBox)>
-        Public Property Machines() As String
+        Public Property Machines() As Boolean
             Get
-                Return _machines
+                Return _machines.ToBoolean
             End Get
-            Set(ByVal value As String)
+            Set(ByVal value As Boolean)
                 CanWriteProperty("Machines", True)
-                If value Is Nothing Then value = String.Empty
                 If Not _machines.Equals(value) Then
-                    _machines = value
+                    _machines = If(value, "Y", "N")
                     PropertyHasChanged("Machines")
                 End If
             End Set
