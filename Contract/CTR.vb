@@ -75,6 +75,7 @@ Namespace PM
 
         Private _contractNo As String = String.Empty
         <CellInfo(Tips:="Enter number of contract")>
+        <Rule(Required:=True)>
         Public Property ContractNo() As String
             Get
                 Return _contractNo
@@ -90,6 +91,7 @@ Namespace PM
         End Property
 
         Private _contractDate As pbs.Helper.SmartDate = New pbs.Helper.SmartDate()
+        <Rule(Required:=True)>
         <CellInfo(Tips:="Enter date of contract")>
         Public Property ContractDate() As String
             Get
@@ -106,6 +108,7 @@ Namespace PM
         End Property
 
         Private _contractor As String = String.Empty
+        <Rule(Required:=True)>
         <CellInfo(Tips:="Enter contructor ID")>
         Public Property Contractor() As String
             Get
@@ -121,34 +124,34 @@ Namespace PM
             End Set
         End Property
 
-        Private _contructionUnit As String = String.Empty
+        Private _constructionUnit As String = String.Empty
         <CellInfo(Tips:="Enter contruction unit ID")>
-        Public Property ContructionUnit() As String
+        Public Property ConstructionUnit() As String
             Get
-                Return _contructionUnit
+                Return _constructionUnit
             End Get
             Set(ByVal value As String)
-                CanWriteProperty("ContructionUnit", True)
+                CanWriteProperty("ConstructionUnit", True)
                 If value Is Nothing Then value = String.Empty
-                If Not _contructionUnit.Equals(value) Then
-                    _contructionUnit = value
-                    PropertyHasChanged("ContructionUnit")
+                If Not _constructionUnit.Equals(value) Then
+                    _constructionUnit = value
+                    PropertyHasChanged("ConstructionUnit")
                 End If
             End Set
         End Property
 
-        Private _contructionUnitName As String = String.Empty
+        Private _constructionUnitName As String = String.Empty
         <CellInfo(Tips:="Enter contruction unit name in case contruction unit doesn't have ID")>
-        Public Property ContructionUnitName() As String
+        Public Property ConstructionUnitName() As String
             Get
-                Return _contructionUnitName
+                Return _constructionUnitName
             End Get
             Set(ByVal value As String)
-                CanWriteProperty("ContructionUnitName", True)
+                CanWriteProperty("ConstructionUnitName", True)
                 If value Is Nothing Then value = String.Empty
-                If Not _contructionUnitName.Equals(value) Then
-                    _contructionUnitName = value
-                    PropertyHasChanged("ContructionUnitName")
+                If Not _constructionUnitName.Equals(value) Then
+                    _constructionUnitName = value
+                    PropertyHasChanged("ConstructionUnitName")
                 End If
             End Set
         End Property
@@ -498,7 +501,22 @@ Namespace PM
 
             'Sample dependent property. when check one , check the other as well
             'ValidationRules.AddDependantProperty("AcCTRCode", "AnalT0")
+
+            ValidationRules.AddRule(AddressOf CheckContract, "ConstructionUnit", 0)
+            ValidationRules.AddRule(AddressOf CheckContract, "ConstructionUnitName", 1)
+            ValidationRules.AddDependantProperty("ConstructionUnit", "ConstructionUnitName", True)
         End Sub
+
+        Private Shared Function CheckContract(Target As Object, e As RuleArgs) As Boolean
+            Dim contract As CTR = Target
+            If String.IsNullOrEmpty(contract.ConstructionUnit) AndAlso String.IsNullOrEmpty(contract.ConstructionUnitName) Then
+                e.Description = ResStr("You must enter value for Contruction Unit or Contruction Unit Name")
+
+                Return False
+            End If
+
+            Return True
+        End Function
 
         Protected Overrides Sub AddBusinessRules()
             AddSharedCommonRules()
@@ -631,8 +649,8 @@ Namespace PM
             _contractNo = dr.GetString("CONTRACT_NO").TrimEnd
             _contractDate.Text = dr.GetInt32("CONTRACT_DATE")
             _contractor = dr.GetString("CONTRACTOR").TrimEnd
-            _contructionUnit = dr.GetString("CONTRUCTION_UNIT").TrimEnd
-            _contructionUnitName = dr.GetString("CONTRUCTION_UNIT_NAME").TrimEnd
+            _constructionUnit = dr.GetString("CONSTRUCTION_UNIT").TrimEnd
+            _constructionUnitName = dr.GetString("CONSTRUCTION_UNIT_NAME").TrimEnd
             _contractType = dr.GetString("CONTRACT_TYPE").TrimEnd
             _contractForm = dr.GetString("CONTRACT_FORM").TrimEnd
             _currency = dr.GetString("CURRENCY").TrimEnd
@@ -680,8 +698,8 @@ Namespace PM
             cm.Parameters.AddWithValue("@CONTRACT_NO", _contractNo.Trim)
             cm.Parameters.AddWithValue("@CONTRACT_DATE", _contractDate.DBValue)
             cm.Parameters.AddWithValue("@CONTRACTOR", _contractor.Trim)
-            cm.Parameters.AddWithValue("@CONTRUCTION_UNIT", _contructionUnit.Trim)
-            cm.Parameters.AddWithValue("@CONTRUCTION_UNIT_NAME", _contructionUnitName.Trim)
+            cm.Parameters.AddWithValue("@CONSTRUCTION_UNIT", _constructionUnit.Trim)
+            cm.Parameters.AddWithValue("@CONSTRUCTION_UNIT_NAME", _constructionUnitName.Trim)
             cm.Parameters.AddWithValue("@CONTRACT_TYPE", _contractType.Trim)
             cm.Parameters.AddWithValue("@CONTRACT_FORM", _contractForm.Trim)
             cm.Parameters.AddWithValue("@CURRENCY", _currency.Trim)

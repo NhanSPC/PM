@@ -74,7 +74,7 @@ Namespace PM
         End Property
 
         Private _contractNo As pbs.Helper.SmartInt32 = New pbs.Helper.SmartInt32(0)
-        <CellInfo(Tips:="")>
+        <CellInfo(Tips:="Enter contract number")>
         Public Property ContractNo() As String
             Get
                 Return _contractNo.Text
@@ -90,6 +90,7 @@ Namespace PM
         End Property
 
         Private _wbs As String = String.Empty
+        <CellInfo(Tips:="Enter Work Breakdown Structure")>
         Public Property Wbs() As String
             Get
                 Return _wbs
@@ -105,6 +106,7 @@ Namespace PM
         End Property
 
         Private _unit As String = String.Empty
+        <CellInfo(Tips:="Enter unit")>
         Public Property Unit() As String
             Get
                 Return _unit
@@ -120,6 +122,7 @@ Namespace PM
         End Property
 
         Private _weigh As pbs.Helper.SmartFloat = New pbs.Helper.SmartFloat(0)
+        <CellInfo(Tips:="Enter weigh")>
         Public Property Weigh() As String
             Get
                 Return _weigh.Text
@@ -135,6 +138,7 @@ Namespace PM
         End Property
 
         Private _labor As String = String.Empty
+        <CellInfo(Tips:="", ControlType:=Forms.CtrlType.CheckBox)>
         Public Property Labor() As String
             Get
                 Return _labor
@@ -150,6 +154,7 @@ Namespace PM
         End Property
 
         Private _materials As String = String.Empty
+        <CellInfo(Tips:="", ControlType:=Forms.CtrlType.CheckBox)>
         Public Property Materials() As String
             Get
                 Return _materials
@@ -165,6 +170,7 @@ Namespace PM
         End Property
 
         Private _machines As String = String.Empty
+        <CellInfo(Tips:="", ControlType:=Forms.CtrlType.CheckBox)>
         Public Property Machines() As String
             Get
                 Return _machines
@@ -180,6 +186,7 @@ Namespace PM
         End Property
 
         Private _unitPrice As pbs.Helper.SmartFloat = New pbs.Helper.SmartFloat(0)
+        <CellInfo(Tips:="Enter unit price")>
         Public Property UnitPrice() As String
             Get
                 Return _unitPrice.Text
@@ -195,6 +202,7 @@ Namespace PM
         End Property
 
         Private _totalAmount As pbs.Helper.SmartFloat = New pbs.Helper.SmartFloat(0)
+        <CellInfo(Tips:="Enter Total amount")>
         Public Property TotalAmount() As String
             Get
                 Return _totalAmount.Text
@@ -210,6 +218,7 @@ Namespace PM
         End Property
 
         Private _performFrom As pbs.Helper.SmartDate = New pbs.Helper.SmartDate
+        <CellInfo(Tips:="Enter the date that construction is performed")>
         Public Property PerformFrom() As String
             Get
                 Return _performFrom.Text
@@ -225,6 +234,7 @@ Namespace PM
         End Property
 
         Private _perfromTo As pbs.Helper.SmartDate = New pbs.Helper.SmartDate
+        <CellInfo(Tips:="Enter the date that construction is completed")>
         Public Property PerfromTo() As String
             Get
                 Return _perfromTo.Text
@@ -457,8 +467,8 @@ Namespace PM
             cm.Parameters.AddWithValue("@TOTAL_AMOUNT", _totalAmount.DBValue)
             cm.Parameters.AddWithValue("@PERFORM_FROM", _performFrom.DBValue)
             cm.Parameters.AddWithValue("@PERFROM_TO", _perfromTo.DBValue)
-            cm.Parameters.AddWithValue("@UPDATED", _updated.DBValue)
-            cm.Parameters.AddWithValue("@UPDATED_BY", _updatedBy.Trim)
+            cm.Parameters.AddWithValue("@UPDATED", ToDay.ToSunDate)
+            cm.Parameters.AddWithValue("@UPDATED_BY", Context.CurrentUserCode)
         End Sub
 
 
