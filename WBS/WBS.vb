@@ -12,6 +12,7 @@ Imports pbs.BO.BusinessRules
 Namespace PM
 
     <Serializable()> _
+    <DB(TableName:="pbs_PM_WBS_{XXX}")>
     Public Class WBS
         Inherits Csla.BusinessBase(Of WBS)
         Implements Interfaces.IGenPartObject
@@ -215,7 +216,7 @@ Namespace PM
         End Property
 
         Private _performFrom As pbs.Helper.SmartDate = New pbs.Helper.SmartDate
-        <CellInfo(Tips:="Enter the date that construction is performed")>
+        <CellInfo(LinkCode.Calendar, Tips:="Enter the date that construction is performed")>
         Public Property PerformFrom() As String
             Get
                 Return _performFrom.Text
@@ -231,7 +232,7 @@ Namespace PM
         End Property
 
         Private _perfromTo As pbs.Helper.SmartDate = New pbs.Helper.SmartDate
-        <CellInfo(Tips:="Enter the date that construction is completed")>
+        <CellInfo(LinkCode.Calendar, Tips:="Enter the date that construction is completed")>
         Public Property PerfromTo() As String
             Get
                 Return _perfromTo.Text

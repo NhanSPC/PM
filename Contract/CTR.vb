@@ -12,6 +12,7 @@ Imports pbs.BO.BusinessRules
 Namespace PM
 
     <Serializable()> _
+    <DB(TableName:="pbs_PM_CONTRACT_{XXX}")>
     Public Class CTR
         Inherits Csla.BusinessBase(Of CTR)
         Implements Interfaces.IGenPartObject
@@ -27,7 +28,7 @@ Namespace PM
         End Sub
 
         Private Sub BO_PropertyChanged(sender As Object, e As ComponentModel.PropertyChangedEventArgs) Handles Me.PropertyChanged
-            Select e.PropertyName
+            Select Case e.PropertyName
 
                 Case "VatRate"
                     _vatAmount.Float = _vatRate.Float * _contractValue.Float
@@ -102,7 +103,7 @@ Namespace PM
 
         Private _contractDate As pbs.Helper.SmartDate = New pbs.Helper.SmartDate()
         <Rule(Required:=True)>
-        <CellInfo(Tips:="Enter date of contract")>
+        <CellInfo(LinkCode.Calendar, Tips:="Enter date of contract")>
         Public Property ContractDate() As String
             Get
                 Return _contractDate.Text
@@ -343,7 +344,7 @@ Namespace PM
         End Property
 
         Private _validTo As pbs.Helper.SmartDate = New pbs.Helper.SmartDate()
-        <CellInfo(Tips:="Enter date that performance security will expired")>
+        <CellInfo(LinkCode.Calendar, Tips:="Enter date that performance security will expired")>
         Public Property ValidTo() As String
             Get
                 Return _validTo.Text
@@ -359,7 +360,7 @@ Namespace PM
         End Property
 
         Private _performFrom As pbs.Helper.SmartDate = New pbs.Helper.SmartDate()
-        <CellInfo(Tips:="Perform from date")>
+        <CellInfo(LinkCode.Calendar, Tips:="Perform from date")>
         Public Property PerformFrom() As String
             Get
                 Return _performFrom.Text
@@ -375,7 +376,7 @@ Namespace PM
         End Property
 
         Private _perfromTo As pbs.Helper.SmartDate = New pbs.Helper.SmartDate()
-        <CellInfo(Tips:="Perform to date ")>
+        <CellInfo(LinkCode.Calendar, Tips:="Perform to date ")>
         Public Property PerfromTo() As String
             Get
                 Return _perfromTo.Text
@@ -423,7 +424,7 @@ Namespace PM
         End Property
 
         Private _paymentTerms As String = String.Empty
-        <CellInfo(Tips:="Enter Terms to get payment")>
+        <CellInfo(Tips:="Enter Terms to get payment", ControlType:=Forms.CtrlType.MemoEdit)>
         Public Property PaymentTerms() As String
             Get
                 Return _paymentTerms
@@ -439,7 +440,7 @@ Namespace PM
         End Property
 
         Private _comments As String = String.Empty
-        <CellInfo(Tips:="Enter contents to be noted")>
+        <CellInfo(Tips:="Enter contents to be noted", ControlType:=Forms.CtrlType.MemoEdit)>
         Public Property Comments() As String
             Get
                 Return _comments
