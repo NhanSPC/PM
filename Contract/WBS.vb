@@ -605,6 +605,8 @@ Namespace PM
                 cm.ExecuteNonQuery()
 
                 _lineNo = CInt(cm.Parameters("@LINE_NO").Value)
+
+                MarkOld()
             End Using
         End Sub
 
@@ -619,6 +621,7 @@ Namespace PM
                 AddInsertParameters(cm)
                 cm.ExecuteNonQuery()
 
+                MarkOld()
             End Using
 
         End Sub

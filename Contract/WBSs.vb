@@ -100,6 +100,7 @@ Namespace PM
                 'child.OrderNo = parent.OrderNo
                 If child.IsNew Then
                     child.Insert(cn)
+                    'child.markold()
                 Else
                     child.Update(cn)
                 End If
