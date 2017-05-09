@@ -8,7 +8,6 @@ Imports pbs.BO.DataAnnotations
 Imports pbs.BO.Script
 Imports pbs.BO.BusinessRules
 
-
 Namespace PM
 
     <Serializable()> _
@@ -27,7 +26,7 @@ Namespace PM
             AddHandler Me.PropertyChanged, AddressOf BO_PropertyChanged
         End Sub
 
-        Private Sub BO_PropertyChanged(sender As Object, e As ComponentModel.PropertyChangedEventArgs) Handles Me.PropertyChanged
+        Private Sub BO_PropertyChanged(sender As Object, e As System.ComponentModel.PropertyChangedEventArgs) Handles Me.PropertyChanged
             Select Case e.PropertyName
 
                 Case "VatRate"
@@ -72,7 +71,7 @@ Namespace PM
 #End Region
 
 #Region " Business Properties and Methods "
-        Private _DTB As String = String.Empty
+        Friend _DTB As String = String.Empty
 
 
         Private _lineNo As Integer
@@ -551,7 +550,7 @@ Namespace PM
                     '    End Select
                 End If
             Next
-            Rules.BusinessRules.RegisterBusinessRules(Me)
+            pbs.BO.Rules.BusinessRules.RegisterBusinessRules(Me)
             MyBase.AddBusinessRules()
         End Sub
 #End Region ' Validation
@@ -642,12 +641,18 @@ Namespace PM
             Using ctx = ConnectionManager.GetManager
                 Using cm = ctx.Connection.CreateCommand()
                     cm.CommandType = CommandType.Text
-                    cm.CommandText = <SqlText>SELECT * FROM pbs_PM_CONTRACT_<%= _DTB %> WHERE LINE_NO= <%= criteria._lineNo %></SqlText>.Value.Trim
+                    cm.CommandText = <SqlText>SELECT * FROM pbs_PM_CONTRACT_<%= _DTB %> WHERE LINE_NO= <%= criteria._lineNo %>
+                                         SELECT * FROM pbs_PM_WBS_<%= _DTB %> WHERE CONTRACT_NO= <%= criteria._lineNo %>
+                                     </SqlText>.Value.Trim
 
                     Using dr As New SafeDataReader(cm.ExecuteReader)
                         If dr.Read Then
                             FetchObject(dr)
                             MarkOld()
+                        End If
+
+                        If dr.NextResult Then
+                            _details = WBSs.GetWBSs(dr, Me)
                         End If
                     End Using
 
@@ -701,6 +706,8 @@ Namespace PM
 
                         _lineNo = CInt(cm.Parameters("@LINE_NO").Value)
                     End Using
+
+                    Me.Details.Update(ctx.Connection, Me)
                 End Using
             End SyncLock
         End Sub
@@ -748,6 +755,8 @@ Namespace PM
                         cm.ExecuteNonQuery()
 
                     End Using
+
+                    Me.Details.Update(ctx.Connection, Me)
                 End Using
             End SyncLock
         End Sub
