@@ -8,18 +8,18 @@ Imports System.Data.SqlClient
 'Namespace PM
 
 <Serializable()> _
-Public Class LEDGERInfoList
-    Inherits Csla.ReadOnlyListBase(Of LEDGERInfoList, LEDGERInfo)
+Public Class PROGRESSInfoList
+    Inherits Csla.ReadOnlyListBase(Of PROGRESSInfoList, PROGRESSInfo)
 
 #Region " Transfer and Report Function "
 
     Public Shared Function TransferOut(ByVal Code_From As String, ByVal Code_To As String, ByVal FileName As String) As Integer
-        Dim _dt As New DataTable(GetType(LEDGER).ToString)
+        Dim _dt As New DataTable(GetType(PROGRESS).ToString)
         Dim oa As New ObjectAdapter()
 
-        For Each info As LEDGERInfo In LEDGERInfoList.GetLEDGERInfoList
+        For Each info As PROGRESSInfo In PROGRESSInfoList.GetPROGRESSInfoList
             If info.Code >= Code_From AndAlso info.Code <= Code_To Then
-                oa.Fill(_dt, LEDGER.GetBO(info.ToString))
+                oa.Fill(_dt, PROGRESS.GetBO(info.ToString))
             End If
         Next
         Try
@@ -43,11 +43,11 @@ Public Class LEDGERInfoList
     End Function
 
     Public Shared Function GetMyReportDataset() As List(Of DataTable)
-        LEDGERInfoList.InvalidateCache()
+        PROGRESSInfoList.InvalidateCache()
 
-        Dim thelist = LEDGERInfoList.GetLEDGERInfoList.ToList()
+        Dim thelist = PROGRESSInfoList.GetPROGRESSInfoList.ToList()
 
-        Dim shr = New pbs.BO.ObjectShredder(Of LEDGERInfo)
+        Dim shr = New pbs.BO.ObjectShredder(Of PROGRESSInfo)
         Dim dts As New List(Of DataTable)
         dts.Add(shr.Shred(thelist, Nothing, LoadOption.OverwriteChanges))
 
@@ -59,7 +59,7 @@ Public Class LEDGERInfoList
 #Region " Business Properties and Methods "
     Private Shared _DTB As String = String.Empty
     Const _SUNTB As String = ""
-    Private Shared _list As LEDGERInfoList
+    Private Shared _list As PROGRESSInfoList
 #End Region 'Business Properties and Methods
 
 #Region " Factory Methods "
@@ -68,21 +68,21 @@ Public Class LEDGERInfoList
         _DTB = Context.CurrentBECode
     End Sub
 
-    Public Shared Function GetLEDGERInfo(ByVal pLineNo As String) As LEDGERInfo
-        Dim Info As LEDGERInfo = LEDGERInfo.EmptyLEDGERInfo(pLineNo)
+    Public Shared Function GetPROGRESSInfo(ByVal pLineNo As String) As PROGRESSInfo
+        Dim Info As PROGRESSInfo = PROGRESSInfo.EmptyPROGRESSInfo(pLineNo)
         ContainsCode(pLineNo, Info)
         Return Info
     End Function
 
     Public Shared Function GetDescription(ByVal pLineNo As String) As String
-        Return GetLEDGERInfo(pLineNo).Description
+        Return GetPROGRESSInfo(pLineNo).Description
     End Function
 
-    Public Shared Function GetLEDGERInfoList() As LEDGERInfoList
+    Public Shared Function GetPROGRESSInfoList() As PROGRESSInfoList
         If _list Is Nothing Or _DTB <> Context.CurrentBECode Then
 
             _DTB = Context.CurrentBECode
-            _list = DataPortal.Fetch(Of LEDGERInfoList)(New FilterCriteria())
+            _list = DataPortal.Fetch(Of PROGRESSInfoList)(New FilterCriteria())
 
         End If
         Return _list
@@ -90,12 +90,12 @@ Public Class LEDGERInfoList
 
     Public Shared Sub InvalidateCache()
         _list = Nothing
-        _ledgerDic = Nothing
+        _progressDic = Nothing
     End Sub
 
     Public Shared Sub ResetCache()
         _list = Nothing
-        _ledgerDic = Nothing
+        _progressDic = Nothing
     End Sub
 
     'Private Shared invalidateLock As New Object
@@ -104,7 +104,7 @@ Public Class LEDGERInfoList
     '        If Not SettingsProvider.SoftInvalidateCache Then
     '            ResetCache()
     '        Else
-    '            Dim thelist = GetLEDGERInfoList_Full()
+    '            Dim thelist = GetPROGRESSInfoList_Full()
     '            If thelist.Count > GetServerRecordCount() Then
     '                'someone delete some record on server. need to reload everything
     '                ResetCache()
@@ -115,11 +115,11 @@ Public Class LEDGERInfoList
     '    End SyncLock
     'End Sub
 
-    Public Shared Function ContainsCode(ByVal pLineNo As String, Optional ByRef RetInfo As LEDGERInfo = Nothing) As Boolean
+    Public Shared Function ContainsCode(ByVal pLineNo As String, Optional ByRef RetInfo As PROGRESSInfo = Nothing) As Boolean
 
-        RetInfo = LEDGERInfo.EmptyLEDGERInfo(pLineNo)
-        If GetLEDGERDic.ContainsKey(pLineNo) Then
-            RetInfo = GetLEDGERDic(pLineNo)
+        RetInfo = PROGRESSInfo.EmptyPROGRESSInfo(pLineNo)
+        If GetPROGRESSDic.ContainsKey(pLineNo) Then
+            RetInfo = GetPROGRESSDic(pLineNo)
             Return True
         End If
 
@@ -133,7 +133,7 @@ Public Class LEDGERInfoList
     '    If ContainsCode(value) Then
     '        Return True
     '    Else
-    '        e.Description = String.Format(ResStr(Msg.NOSUCHITEM), ResStr("LEDGER"), value)
+    '        e.Description = String.Format(ResStr(Msg.NOSUCHITEM), ResStr("PROGRESS"), value)
     '        Return False
     '    End If
     'End Function
@@ -163,18 +163,18 @@ Public Class LEDGERInfoList
 
                 Using cm = cn.CreateCommand()
                     cm.CommandType = CommandType.Text
-                    cm.CommandText = <SqlText>SELECT * FROM pbs_PM_LEDGER_<%= _DTB %></SqlText>.Value.Trim
+                    cm.CommandText = <SqlText>SELECT * FROM pbs_PM_PROGRESS_<%= _DTB %></SqlText>.Value.Trim
 
                     ' If criteria._timeStamp IsNot Nothing AndAlso criteria._timeStamp.Length > 0 Then
-                    'cm.CommandText = <SqlText>SELECT * FROM pbs_PM_LEDGER_DEM WHERE DTB='<%= _DTB %>'</SqlText>.Value.Trim AND TIME_STAMP > @CurrentTimeStamp.Value.Trim
+                    'cm.CommandText = <SqlText>SELECT * FROM pbs_PM_PROGRESS_DEM WHERE DTB='<%= _DTB %>'</SqlText>.Value.Trim AND TIME_STAMP > @CurrentTimeStamp.Value.Trim
                     '     cm.Parameters.AddWithValue("@CurrentTimeStamp", criteria._timeStamp)
                     ' Else
-                    '     cm.CommandText = <SqlText>SELECT * FROM pbs_PM_LEDGER_DEM WHERE DTB='<%= _DTB %>'</SqlText>.Value.Trim
+                    '     cm.CommandText = <SqlText>SELECT * FROM pbs_PM_PROGRESS_DEM WHERE DTB='<%= _DTB %>'</SqlText>.Value.Trim
                     ' End If
 
                     Using dr As New SafeDataReader(cm.ExecuteReader)
                         While dr.Read
-                            Dim info = LEDGERInfo.GetLEDGERInfo(dr)
+                            Dim info = PROGRESSInfo.GetPROGRESSInfo(dr)
                             Me.Add(info)
                         End While
                     End Using
@@ -183,7 +183,7 @@ Public Class LEDGERInfoList
 
                 ' 'read the current version of the list
                 ' Using cm As SqlCommand = cn.CreateSQLCommand()
-                'cm.CommandText = SELECT max(TIME_STAMP) FROM pbs_PM_LEDGER_DEM WHERE DTB.Value.Tri
+                'cm.CommandText = SELECT max(TIME_STAMP) FROM pbs_PM_PROGRESS_DEM WHERE DTB.Value.Tri
                 '     Dim ret = cm.ExecuteScalar
                 '     If ret IsNot Nothing Then _listTimeStamp = ret
                 ' End Using
@@ -195,20 +195,20 @@ Public Class LEDGERInfoList
     End Sub
 
 #End Region ' Data Access                   
-#Region "LEDGER Dictionary"
+#Region "PROGRESS Dictionary"
 
-    Private Shared _ledgerDic As Dictionary(Of String, LEDGERInfo)
+    Private Shared _progressDic As Dictionary(Of String, PROGRESSInfo)
 
-    Private Shared Function GetLEDGERDic() As Dictionary(Of String, LEDGERInfo)
-        If _ledgerDic Is Nothing OrElse _DTB <> Context.CurrentBECode Then
-            _ledgerDic = New Dictionary(Of String, LEDGERInfo)
+    Private Shared Function GetPROGRESSDic() As Dictionary(Of String, PROGRESSInfo)
+        If _progressDic Is Nothing OrElse _DTB <> Context.CurrentBECode Then
+            _progressDic = New Dictionary(Of String, PROGRESSInfo)
 
-            For Each itm In LEDGERInfoList.GetLEDGERInfoList
-                _ledgerDic.Add(itm.Code, itm)
+            For Each itm In PROGRESSInfoList.GetPROGRESSInfoList
+                _progressDic.Add(itm.Code, itm)
             Next
         End If
 
-        Return _ledgerDic
+        Return _progressDic
 
     End Function
 
@@ -260,7 +260,7 @@ Public Class LEDGERInfoList
     'End Sub
 
     'Private Shared Function GetServerRecordCount() As Integer
-    '    Dim script = SELECT count(*) FROM pbs_PM_LEDGER_DEM  _DTB .Value.Tri
+    '    Dim script = SELECT count(*) FROM pbs_PM_PROGRESS_DEM  _DTB .Value.Tri
     '    Return SQLCommander.GetScalarInteger(script)
     'End Function
 #End Region

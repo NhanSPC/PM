@@ -5,138 +5,138 @@ Imports System.Xml
 Imports pbs.Helper
 Imports System.Data.SqlClient
 
-Namespace PM
+'Namespace PM
 
-    <Serializable()> _
-    Public Class CTRInfoList
-        Inherits Csla.ReadOnlyListBase(Of CTRInfoList, CTRInfo)
+<Serializable()> _
+Public Class CTRInfoList
+    Inherits Csla.ReadOnlyListBase(Of CTRInfoList, CTRInfo)
 
 #Region " Transfer and Report Function "
 
-        Public Shared Function TransferOut(ByVal Code_From As String, ByVal Code_To As String, ByVal FileName As String) As Integer
-            Dim _dt As New DataTable(GetType(CTR).ToString)
-            Dim oa As New ObjectAdapter()
+    Public Shared Function TransferOut(ByVal Code_From As String, ByVal Code_To As String, ByVal FileName As String) As Integer
+        Dim _dt As New DataTable(GetType(CTR).ToString)
+        Dim oa As New ObjectAdapter()
 
-            For Each info As CTRInfo In CTRInfoList.GetCTRInfoList
-                If info.Code >= Code_From AndAlso info.Code <= Code_To Then
-                    oa.Fill(_dt, CTR.GetBO(info.ToString))
-                End If
-            Next
-            Try
-                _dt.Columns.Remove("IsNew")
-                _dt.Columns.Remove("IsValid")
-                _dt.Columns.Remove("IsSavable")
-                _dt.Columns.Remove("IsDeleted")
-                _dt.Columns.Remove("IsDirty")
-                _dt.Columns.Remove("BrokenRulesCollection")
-            Catch ex As Exception
-            End Try
+        For Each info As CTRInfo In CTRInfoList.GetCTRInfoList
+            If info.Code >= Code_From AndAlso info.Code <= Code_To Then
+                oa.Fill(_dt, CTR.GetBO(info.ToString))
+            End If
+        Next
+        Try
+            _dt.Columns.Remove("IsNew")
+            _dt.Columns.Remove("IsValid")
+            _dt.Columns.Remove("IsSavable")
+            _dt.Columns.Remove("IsDeleted")
+            _dt.Columns.Remove("IsDirty")
+            _dt.Columns.Remove("BrokenRulesCollection")
+        Catch ex As Exception
+        End Try
 
-            For Each col As DataColumn In _dt.Columns
-                col.ColumnMapping = MappingType.Attribute
-            Next
+        For Each col As DataColumn In _dt.Columns
+            col.ColumnMapping = MappingType.Attribute
+        Next
 
-            _dt.WriteXml(FileName)
+        _dt.WriteXml(FileName)
 
-            Return _dt.Rows.Count
+        Return _dt.Rows.Count
 
-        End Function
+    End Function
 
-        Public Shared Function GetMyReportDataset() As List(Of DataTable)
-            CTRInfoList.InvalidateCache()
+    Public Shared Function GetMyReportDataset() As List(Of DataTable)
+        CTRInfoList.InvalidateCache()
 
-            Dim thelist = CTRInfoList.GetCTRInfoList.ToList()
+        Dim thelist = CTRInfoList.GetCTRInfoList.ToList()
 
-            Dim shr = New pbs.BO.ObjectShredder(Of CTRInfo)
-            Dim dts As New List(Of DataTable)
-            dts.Add(shr.Shred(thelist, Nothing, LoadOption.OverwriteChanges))
+        Dim shr = New pbs.BO.ObjectShredder(Of CTRInfo)
+        Dim dts As New List(Of DataTable)
+        dts.Add(shr.Shred(thelist, Nothing, LoadOption.OverwriteChanges))
 
-            Return dts
-        End Function
+        Return dts
+    End Function
 
 #End Region
 
 #Region " Business Properties and Methods "
-        Private Shared _DTB As String = String.Empty
-        Const _SUNTB As String = ""
-        Private Shared _list As CTRInfoList
+    Private Shared _DTB As String = String.Empty
+    Const _SUNTB As String = ""
+    Private Shared _list As CTRInfoList
 #End Region 'Business Properties and Methods
 
 #Region " Factory Methods "
 
-        Private Sub New()
+    Private Sub New()
+        _DTB = Context.CurrentBECode
+    End Sub
+
+    Public Shared Function GetCTRInfo(ByVal pLineNo As String) As CTRInfo
+        Dim Info As CTRInfo = CTRInfo.EmptyCTRInfo(pLineNo)
+        ContainsCode(pLineNo, Info)
+        Return Info
+    End Function
+
+    Public Shared Function GetDescription(ByVal pLineNo As String) As String
+        Return GetCTRInfo(pLineNo).Description
+    End Function
+
+    Public Shared Function GetCTRInfoList() As CTRInfoList
+        If _list Is Nothing Or _DTB <> Context.CurrentBECode Then
+
             _DTB = Context.CurrentBECode
-        End Sub
+            _list = DataPortal.Fetch(Of CTRInfoList)(New FilterCriteria())
 
-        Public Shared Function GetCTRInfo(ByVal pLineNo As String) As CTRInfo
-            Dim Info As CTRInfo = CTRInfo.EmptyCTRInfo(pLineNo)
-            ContainsCode(pLineNo, Info)
-            Return Info
-        End Function
+        End If
+        Return _list
+    End Function
 
-        Public Shared Function GetDescription(ByVal pLineNo As String) As String
-            Return GetCTRInfo(pLineNo).Description
-        End Function
+    Public Shared Sub InvalidateCache()
+        _list = Nothing
+        _CTRDic = Nothing
+    End Sub
 
-        Public Shared Function GetCTRInfoList() As CTRInfoList
-            If _list Is Nothing Or _DTB <> Context.CurrentBECode Then
+    Public Shared Sub ResetCache()
+        _list = Nothing
+        _CTRDic = Nothing
+    End Sub
 
-                _DTB = Context.CurrentBECode
-                _list = DataPortal.Fetch(Of CTRInfoList)(New FilterCriteria())
+    'Private Shared invalidateLock As New Object
+    'Public Shared Sub InvalidateCache()
+    '    SyncLock invalidateLock
+    '        If Not SettingsProvider.SoftInvalidateCache Then
+    '            ResetCache()
+    '        Else
+    '            Dim thelist = GetCTRInfoList_Full()
+    '            If thelist.Count > GetServerRecordCount() Then
+    '                'someone delete some record on server. need to reload everything
+    '                ResetCache()
+    '            Else
+    '                If thelist IsNot Nothing Then thelist.UpdatedInfoList()
+    '            End If
+    '        End If
+    '    End SyncLock
+    'End Sub
 
-            End If
-            Return _list
-        End Function
+    Public Shared Function ContainsCode(ByVal pLineNo As String, Optional ByRef RetInfo As CTRInfo = Nothing) As Boolean
 
-        Public Shared Sub InvalidateCache()
-            _list = Nothing
-            _CTRDic = Nothing
-        End Sub
+        RetInfo = CTRInfo.EmptyCTRInfo(pLineNo)
+        If GetCTRDic.ContainsKey(pLineNo) Then
+            RetInfo = GetCTRDic(pLineNo)
+            Return True
+        End If
 
-        Public Shared Sub ResetCache()
-            _list = Nothing
-            _CTRDic = Nothing
-        End Sub
+    End Function
 
-        'Private Shared invalidateLock As New Object
-        'Public Shared Sub InvalidateCache()
-        '    SyncLock invalidateLock
-        '        If Not SettingsProvider.SoftInvalidateCache Then
-        '            ResetCache()
-        '        Else
-        '            Dim thelist = GetCTRInfoList_Full()
-        '            If thelist.Count > GetServerRecordCount() Then
-        '                'someone delete some record on server. need to reload everything
-        '                ResetCache()
-        '            Else
-        '                If thelist IsNot Nothing Then thelist.UpdatedInfoList()
-        '            End If
-        '        End If
-        '    End SyncLock
-        'End Sub
+    'Public Shared Function ContainsCode(ByVal Target As Object, ByVal e As Validation.RuleArgs) As Boolean
+    '    Dim value As String = CType(CallByName(Target, e.PropertyName, CallType.Get), String)
+    '    'no thing to check
+    '    If String.IsNullOrEmpty(value) Then Return True
 
-        Public Shared Function ContainsCode(ByVal pLineNo As String, Optional ByRef RetInfo As CTRInfo = Nothing) As Boolean
-
-            RetInfo = CTRInfo.EmptyCTRInfo(pLineNo)
-            If GetCTRDic.ContainsKey(pLineNo) Then
-                RetInfo = GetCTRDic(pLineNo)
-                Return True
-            End If
-
-        End Function
-
-        'Public Shared Function ContainsCode(ByVal Target As Object, ByVal e As Validation.RuleArgs) As Boolean
-        '    Dim value As String = CType(CallByName(Target, e.PropertyName, CallType.Get), String)
-        '    'no thing to check
-        '    If String.IsNullOrEmpty(value) Then Return True
-
-        '    If ContainsCode(value) Then
-        '        Return True
-        '    Else
-        '        e.Description = String.Format(ResStr(Msg.NOSUCHITEM), ResStr("CTR"), value)
-        '        Return False
-        '    End If
-        'End Function
+    '    If ContainsCode(value) Then
+    '        Return True
+    '    Else
+    '        e.Description = String.Format(ResStr(Msg.NOSUCHITEM), ResStr("CTR"), value)
+    '        Return False
+    '    End If
+    'End Function
 
 #End Region ' Factory Methods
 
@@ -144,128 +144,128 @@ Namespace PM
 
 #Region " Filter Criteria "
 
-        <Serializable()> _
-        Private Class FilterCriteria
-            Friend _timeStamp() As Byte
-            Public Sub New()
-            End Sub
-        End Class
+    <Serializable()> _
+    Private Class FilterCriteria
+        Friend _timeStamp() As Byte
+        Public Sub New()
+        End Sub
+    End Class
 
 #End Region
-        Private Shared _lockObj As New Object
+    Private Shared _lockObj As New Object
 
-        Private Overloads Sub DataPortal_Fetch(ByVal criteria As FilterCriteria)
-            SyncLock _lockObj
-                RaiseListChangedEvents = False
-                IsReadOnly = False
-                Using cn = New SqlClient.SqlConnection(Database.PhoebusConnection)
+    Private Overloads Sub DataPortal_Fetch(ByVal criteria As FilterCriteria)
+        SyncLock _lockObj
+            RaiseListChangedEvents = False
+            IsReadOnly = False
+            Using cn = New SqlClient.SqlConnection(Database.PhoebusConnection)
 
-                    cn.Open()
+                cn.Open()
 
-                    Using cm = cn.CreateCommand()
-                        cm.CommandType = CommandType.Text
-                        cm.CommandText = <SqlText>SELECT * FROM pbs_PM_CONTRACT_<%= _DTB %></SqlText>.Value.Trim
+                Using cm = cn.CreateCommand()
+                    cm.CommandType = CommandType.Text
+                    cm.CommandText = <SqlText>SELECT * FROM pbs_PM_CONTRACT_<%= _DTB %></SqlText>.Value.Trim
 
-                        ' If criteria._timeStamp IsNot Nothing AndAlso criteria._timeStamp.Length > 0 Then
-                        'cm.CommandText = <SqlText>SELECT * FROM pbs_PM_CONTRACT_DEM WHERE DTB='<%= _DTB %>'</SqlText>.Value.Trim AND TIME_STAMP > @CurrentTimeStamp.Value.Trim
-                        '     cm.Parameters.AddWithValue("@CurrentTimeStamp", criteria._timeStamp)
-                        ' Else
-                        '     cm.CommandText = <SqlText>SELECT * FROM pbs_PM_CONTRACT_DEM WHERE DTB='<%= _DTB %>'</SqlText>.Value.Trim
-                        ' End If
+                    ' If criteria._timeStamp IsNot Nothing AndAlso criteria._timeStamp.Length > 0 Then
+                    'cm.CommandText = <SqlText>SELECT * FROM pbs_PM_CONTRACT_DEM WHERE DTB='<%= _DTB %>'</SqlText>.Value.Trim AND TIME_STAMP > @CurrentTimeStamp.Value.Trim
+                    '     cm.Parameters.AddWithValue("@CurrentTimeStamp", criteria._timeStamp)
+                    ' Else
+                    '     cm.CommandText = <SqlText>SELECT * FROM pbs_PM_CONTRACT_DEM WHERE DTB='<%= _DTB %>'</SqlText>.Value.Trim
+                    ' End If
 
-                        Using dr As New SafeDataReader(cm.ExecuteReader)
-                            While dr.Read
-                                Dim info = CTRInfo.GetCTRInfo(dr)
-                                Me.Add(info)
-                            End While
-                        End Using
-
+                    Using dr As New SafeDataReader(cm.ExecuteReader)
+                        While dr.Read
+                            Dim info = CTRInfo.GetCTRInfo(dr)
+                            Me.Add(info)
+                        End While
                     End Using
 
-                    ' 'read the current version of the list
-                    ' Using cm As SqlCommand = cn.CreateSQLCommand()
-                    'cm.CommandText = SELECT max(TIME_STAMP) FROM pbs_PM_CONTRACT_DEM WHERE DTB.Value.Tri
-                    '     Dim ret = cm.ExecuteScalar
-                    '     If ret IsNot Nothing Then _listTimeStamp = ret
-                    ' End Using
-
                 End Using
-                IsReadOnly = True
-                RaiseListChangedEvents = True
-            End SyncLock
-        End Sub
+
+                ' 'read the current version of the list
+                ' Using cm As SqlCommand = cn.CreateSQLCommand()
+                'cm.CommandText = SELECT max(TIME_STAMP) FROM pbs_PM_CONTRACT_DEM WHERE DTB.Value.Tri
+                '     Dim ret = cm.ExecuteScalar
+                '     If ret IsNot Nothing Then _listTimeStamp = ret
+                ' End Using
+
+            End Using
+            IsReadOnly = True
+            RaiseListChangedEvents = True
+        End SyncLock
+    End Sub
 
 #End Region ' Data Access                   
 #Region "CTR Dictionary"
 
-        Private Shared _CTRDic As Dictionary(Of String, CTRInfo)
+    Private Shared _CTRDic As Dictionary(Of String, CTRInfo)
 
-        Private Shared Function GetCTRDic() As Dictionary(Of String, CTRInfo)
-            If _CTRDic Is Nothing OrElse _DTB <> Context.CurrentBECode Then
-                _CTRDic = New Dictionary(Of String, CTRInfo)
+    Private Shared Function GetCTRDic() As Dictionary(Of String, CTRInfo)
+        If _CTRDic Is Nothing OrElse _DTB <> Context.CurrentBECode Then
+            _CTRDic = New Dictionary(Of String, CTRInfo)
 
-                For Each itm In CTRInfoList.GetCTRInfoList
-                    _CTRDic.Add(itm.Code, itm)
-                Next
-            End If
+            For Each itm In CTRInfoList.GetCTRInfoList
+                _CTRDic.Add(itm.Code, itm)
+            Next
+        End If
 
-            Return _CTRDic
+        Return _CTRDic
 
-        End Function
+    End Function
 
 #End Region
 
 #Region "TimeStamp"
-        'Private _listTimeStamp() As Byte
+    'Private _listTimeStamp() As Byte
 
-        'Private Sub UpdatedInfoList()
-        '    'get new updated notes by row stamp
-        '    Dim newInfos = DataPortal.Fetch(Of PODInfoList)(New FilterCriteria() With {._timeStamp = _listTimeStamp})
+    'Private Sub UpdatedInfoList()
+    '    'get new updated notes by row stamp
+    '    Dim newInfos = DataPortal.Fetch(Of PODInfoList)(New FilterCriteria() With {._timeStamp = _listTimeStamp})
 
-        '    If newInfos.Count = 0 Then Exit Sub
+    '    If newInfos.Count = 0 Then Exit Sub
 
-        '    'merge new notes with the old one
+    '    'merge new notes with the old one
 
-        '    Dim oldPODs = GetPODInfoList_Full()
-        '    Dim oldDic = New Dictionary(Of String, PODInfo)
-        '    For Each itm In oldPODs
-        '        oldDic.Add(itm.Code, itm)
-        '    Next
+    '    Dim oldPODs = GetPODInfoList_Full()
+    '    Dim oldDic = New Dictionary(Of String, PODInfo)
+    '    For Each itm In oldPODs
+    '        oldDic.Add(itm.Code, itm)
+    '    Next
 
-        '    oldPODs.IsReadOnly = False
-        '    oldPODs.RaiseListChangedEvents = False
+    '    oldPODs.IsReadOnly = False
+    '    oldPODs.RaiseListChangedEvents = False
 
-        '    For Each info In newInfos
-        '        If oldDic.ContainsKey(info.Code) Then
+    '    For Each info In newInfos
+    '        If oldDic.ContainsKey(info.Code) Then
 
-        '            Dim oldNote = oldDic(info.Code)
-        '            oldPODs.Remove(oldNote)
-        '            oldPODs.Add(info)
+    '            Dim oldNote = oldDic(info.Code)
+    '            oldPODs.Remove(oldNote)
+    '            oldPODs.Add(info)
 
-        '            oldDic(info.Code) = info
-        '        Else
-        '            oldPODs.Add(info)
+    '            oldDic(info.Code) = info
+    '        Else
+    '            oldPODs.Add(info)
 
-        '            oldDic.Add(info.Code, info)
-        '        End If
-        '    Next
+    '            oldDic.Add(info.Code, info)
+    '        End If
+    '    Next
 
 
-        '    oldPODs.IsReadOnly = False
-        '    oldPODs.RaiseListChangedEvents = False
+    '    oldPODs.IsReadOnly = False
+    '    oldPODs.RaiseListChangedEvents = False
 
-        '    _podDic = oldDic
-        '    _list = oldPODs
-        '    _list._listTimeStamp = newInfos._listTimeStamp
+    '    _podDic = oldDic
+    '    _list = oldPODs
+    '    _list._listTimeStamp = newInfos._listTimeStamp
 
-        'End Sub
+    'End Sub
 
-        'Private Shared Function GetServerRecordCount() As Integer
-        '    Dim script = SELECT count(*) FROM pbs_PM_CONTRACT_DEM  _DTB .Value.Tri
-        '    Return SQLCommander.GetScalarInteger(script)
-        'End Function
+    'Private Shared Function GetServerRecordCount() As Integer
+    '    Dim script = SELECT count(*) FROM pbs_PM_CONTRACT_DEM  _DTB .Value.Tri
+    '    Return SQLCommander.GetScalarInteger(script)
+    'End Function
 #End Region
 
-    End Class
+End Class
 
-End Namespace
+'End Namespace
