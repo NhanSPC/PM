@@ -1,0 +1,76 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+SPC.Phoebus.PM
+</name>
+</assembly>
+<members>
+<member name="P:pbs.BO.PM.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:pbs.BO.PM.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="P:pbs.BO.PM.My.Resources.Resources.DB_Scripts_PM">
+	<summary>
+  Looks up a localized string similar to &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;Root&gt;
+  &lt;!--CONTRACT--&gt;
+  &lt;DBO name="pbs_PM_CONTRACT_{XXX}" type="U"&gt;
+    &lt;Install&gt;
+      IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID(N'dbo.[pbs_PM_CONTRACT_{XXX}]'))
+      BEGIN
+      CREATE TABLE [dbo].[pbs_PM_CONTRACT_{XXX}](
+      [LINE_NO] [int] IDENTITY(1,1) NOT NULL,
+      [CONTRACT_NO] [nvarchar](25) NOT NULL,
+      [CONTRACT_DATE] [int] NOT NULL,
+      [CONTRACTOR] [varchar](15) NOT NULL,
+      [CONSTRUCTION_UNIT] [varchar](15) [rest of string was truncated]";.
+</summary>
+</member><member name="P:pbs.BO.PM.My.Resources.Resources.PhoebusSQLite">
+	<summary>
+  Looks up a localized string similar to &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;Root&gt;
+  &lt;!--CourseType--&gt;
+  &lt;DBO name="CourseType" type="U"&gt;
+    &lt;Install&gt;
+      CREATE TABLE IF NOT EXISTS CourseType
+      ([CourseTypeID] integer NOT NULL PRIMARY KEY,
+      [CourseTypeCode] [nvarchar](20) NOT NULL ,
+      [Idx] [int] NOT NULL ,
+      [Enabled] integer NOT NULL
+      )
+    &lt;/Install&gt;
+  &lt;/DBO&gt;
+  &lt;DBO name="pbs_EXT_VUS_CourseType_InsertUpdate" type="P"&gt;
+    &lt;Install&gt;
+      INSERT OR IGNORE INTO system_STORED_PROCEDURES
+      VALUES
+ [rest of string was truncated]";.
+</summary>
+</member><member name="P:pbs.BO.PM.My.Resources.Resources.SCHEMALIST_VUS">
+	<summary>
+  Looks up a localized string similar to &lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;PBS_SCHEMA&gt;
+  &lt;row table="ALLOCREV" Description="Allocated invoice data" module="EXT.VUS"/&gt;
+  &lt;row table="VUSINVPROC" Description="Processing invoice data" module="EXT.VUS"/&gt;
+  &lt;row table="VUSBRHIST" Description="Branch Change History" module="EXT.VUS"/&gt;
+  &lt;row table="VUSCLHIST" Description="Class Change History" module="EXT.VUS"/&gt;
+&lt;/PBS_SCHEMA&gt;.
+</summary>
+</member><member name="T:pbs.BO.PM.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="T:pbs.BO.PM.Rules.PMCustomFunctions">
+	<summary>
+ This functions help pbs.Helper.Evaluator evaluate object expression without dependency to Devexpress
+ </summary>
+	<remarks></remarks>
+</member>
+</members>
+</doc>
