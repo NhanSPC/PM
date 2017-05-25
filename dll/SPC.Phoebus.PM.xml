@@ -31,35 +31,32 @@ SPC.Phoebus.PM
       [CONTRACTOR] [varchar](15) NOT NULL,
       [CONSTRUCTION_UNIT] [varchar](15) [rest of string was truncated]";.
 </summary>
-</member><member name="P:pbs.BO.PM.My.Resources.Resources.PhoebusSQLite">
+</member><member name="P:pbs.BO.PM.My.Resources.Resources.DB_Scripts_PM_SQLite">
 	<summary>
   Looks up a localized string similar to &lt;?xml version="1.0" encoding="utf-8" ?&gt;
 &lt;Root&gt;
-  &lt;!--CourseType--&gt;
-  &lt;DBO name="CourseType" type="U"&gt;
+  &lt;!--CONTRACT--&gt;
+  &lt;DBO name="pbs_PM_CONTRACT_{XXX}" type="U"&gt;
     &lt;Install&gt;
-      CREATE TABLE IF NOT EXISTS CourseType
-      ([CourseTypeID] integer NOT NULL PRIMARY KEY,
-      [CourseTypeCode] [nvarchar](20) NOT NULL ,
-      [Idx] [int] NOT NULL ,
-      [Enabled] integer NOT NULL
-      )
-    &lt;/Install&gt;
-  &lt;/DBO&gt;
-  &lt;DBO name="pbs_EXT_VUS_CourseType_InsertUpdate" type="P"&gt;
-    &lt;Install&gt;
-      INSERT OR IGNORE INTO system_STORED_PROCEDURES
-      VALUES
- [rest of string was truncated]";.
+      CREATE TABLE IF NOT EXISTS pbs_PM_CONTRACT_{XXX}(
+      [LINE_NO] [int] NOT NULL PRIMARY KEY AUTOINCREMENT,
+      [CONTRACT_NO] [nvarchar](25) NOT NULL,
+      [CONTRACT_DATE] [int] NOT NULL,
+      [CONTRACTOR] [varchar](15) NOT NULL,
+      [CONSTRUCTION_UNIT] [varchar](15) NOT NULL,
+      [CONSTRUCTION_UNIT_NAME] [nvarchar](50) NOT NULL,
+      [CONTRACT_TYPE] [varcha [rest of string was truncated]";.
 </summary>
-</member><member name="P:pbs.BO.PM.My.Resources.Resources.SCHEMALIST_VUS">
+</member><member name="P:pbs.BO.PM.My.Resources.Resources.SCHEMALIST_PM">
 	<summary>
   Looks up a localized string similar to &lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;PBS_SCHEMA&gt;
-  &lt;row table="ALLOCREV" Description="Allocated invoice data" module="EXT.VUS"/&gt;
-  &lt;row table="VUSINVPROC" Description="Processing invoice data" module="EXT.VUS"/&gt;
-  &lt;row table="VUSBRHIST" Description="Branch Change History" module="EXT.VUS"/&gt;
-  &lt;row table="VUSCLHIST" Description="Class Change History" module="EXT.VUS"/&gt;
+
+  &lt;row table="CTR" Description="Contract" module="PM"/&gt;
+  &lt;row table="WBS" Description="Work Breakdown Structure" module="PM"/&gt;
+  &lt;row table="LEDGER" Description="Ledger" module="PM"/&gt;
+  &lt;row table="PROGRESS" Description="Progress" module="PM"/&gt;
+  
 &lt;/PBS_SCHEMA&gt;.
 </summary>
 </member><member name="T:pbs.BO.PM.My.Resources.Resources">
