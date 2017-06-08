@@ -512,21 +512,21 @@ Public Class CTR
         'Sample dependent property. when check one , check the other as well
         'ValidationRules.AddDependantProperty("AcCTRCode", "AnalT0")
 
-        ValidationRules.AddRule(AddressOf CheckContract, "ConstructionUnit", 0)
-        ValidationRules.AddRule(AddressOf CheckContract, "ConstructionUnitName", 1)
-        ValidationRules.AddDependantProperty("ConstructionUnit", "ConstructionUnitName", True)
+        'ValidationRules.AddRule(AddressOf CheckContract, "ConstructionUnit", 0)
+        'ValidationRules.AddRule(AddressOf CheckContract, "ConstructionUnitName", 1)
+        'ValidationRules.AddDependantProperty("ConstructionUnit", "ConstructionUnitName", True)
     End Sub
 
-    Private Shared Function CheckContract(Target As Object, e As RuleArgs) As Boolean
-        Dim contract As CTR = Target
-        If String.IsNullOrEmpty(contract.ConstructionUnit) AndAlso String.IsNullOrEmpty(contract.ConstructionUnitName) Then
-            e.Description = ResStr("You must enter value for Contruction Unit or Contruction Unit Name")
+    'Private Shared Function CheckContract(Target As Object, e As RuleArgs) As Boolean
+    '    Dim contract As CTR = Target
+    '    If String.IsNullOrEmpty(contract.ConstructionUnit) AndAlso String.IsNullOrEmpty(contract.ConstructionUnitName) Then
+    '        e.Description = ResStr("You must enter value for Contruction Unit or Contruction Unit Name")
 
-            Return False
-        End If
+    '        Return False
+    '    End If
 
-        Return True
-    End Function
+    '    Return True
+    'End Function
 
     Protected Overrides Sub AddBusinessRules()
         AddSharedCommonRules()
@@ -606,6 +606,10 @@ Public Class CTR
         Dim cloningCTR As CTR = MyBase.Clone
         cloningCTR._lineNo = 0
         cloningCTR._DTB = Context.CurrentBECode
+
+        For Each itm In cloningCTR._details
+            itm.MarkAsNewChild()
+        Next
 
         'Todo:Remember to reset status of the new object here 
         cloningCTR.MarkNew()

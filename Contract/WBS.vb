@@ -659,6 +659,10 @@ Public Class WBS
         End Using
 
     End Sub
+
+    Sub MarkAsNewChild()
+        MarkNew()
+    End Sub
 #End Region
 
 End Class
