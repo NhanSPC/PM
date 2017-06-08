@@ -20,6 +20,16 @@ Namespace DB
         End Sub
 
         Public Sub Install(ByRef Messages As List(Of String)) Implements IScriptInstaller.Install
+
+            If Context.UseSQLite Then
+                InstallSQLite(Messages)
+            Else
+                InstallSQL(Messages)
+            End If
+
+        End Sub
+
+        Public Sub InstallSQL(ByRef Messages As List(Of String))
             'get DBScript from Resources
             Dim ScriptText = My.Resources.DB_Scripts_PM
             Dim xele = XElement.Parse(ScriptText)
@@ -52,6 +62,41 @@ Namespace DB
             pbs.Helper.UIServices.WaitingPanelService.Done()
 
         End Sub
+
+        Public Sub InstallSQLite(ByRef Messages As List(Of String))
+            'get DBScript from Resources
+            Dim ScriptText = My.Resources.DB_Scripts_PM_SQLite
+            Dim xele = XElement.Parse(ScriptText)
+            Dim theEntity = Context.CurrentBECode
+            Dim scriplist = New List(Of String)
+
+            Dim str As String = String.Empty
+            'get contents from Install node, then add contents to list
+            For Each dbo In xele...<DBO>
+                Dim thename = DNz(dbo.@name, String.Empty).Replace("{XXX}", theEntity)
+                pbs.Helper.UIServices.WaitingPanelService.Wait("Install Project Management Module", thename)
+
+
+                For Each item In dbo...<Install>
+                    Dim scr = DNz(item.Value, String.Empty)
+                    Dim decoratedScript = scr.Replace("{XXX}", theEntity)
+
+                    Try
+                        pbs.BO.Lava.SQLiteCommander.RunInsertUpdate(decoratedScript)
+                        Messages.Add(String.Format("Install Project Management Module: {0}", thename))
+                    Catch ex As Exception
+                        Messages.Add(String.Format("Can not install {0}", decoratedScript))
+                        Messages.Add(ex.Message)
+                    End Try
+                    str += decoratedScript
+                Next
+            Next
+
+
+            pbs.Helper.UIServices.WaitingPanelService.Done()
+
+        End Sub
+
     End Class
 End Namespace
 
